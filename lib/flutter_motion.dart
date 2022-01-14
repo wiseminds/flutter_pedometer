@@ -5,16 +5,16 @@
 
 import 'dart:async';
 
-import 'package:flutter/services.dart';
-import 'package:flutter_pedometer/models/activity.dart';
+import 'package:flutter/services.dart'; 
 
+import 'models/activity.dart';
 import 'models/motion.dart';
 export 'models/activity.dart';
 export 'models/motion.dart';
 
 // const int _stopped = 0, _walking = 1;
 
-class FlutterPedometer {
+class FlutterMotion {
   static const EventChannel _activityRecognitionChannel =
       EventChannel('com.flutter_pedometer.activity_recognition');
   static const EventChannel _motionDetectorChannel =

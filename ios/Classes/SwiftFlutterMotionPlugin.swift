@@ -4,7 +4,7 @@ import UIKit
 import CoreMotion
 
 
-public class SwiftFlutterPedometerPlugin: NSObject, FlutterPlugin {
+public class SwiftFlutterMotionPlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
     // let channel = FlutterMethodChannel(name: "flutter_pedometer", binaryMessenger: registrar.messenger())
      let activityRecognitionHandler = ActivityRecognition()
@@ -143,6 +143,14 @@ public class MotionDetection: NSObject, FlutterStreamHandler {
             eventSink(FlutterError(code: "1", message: "Requires iOS 10.0 minimum", details: nil))
         }
         return nil
+    }
+    
+    public func queryData(){
+//        pedometer.queryPedometerData(from: Date(), to: Date()) { (data, error) in
+//            DispatchQueue.main.async {
+//                         print(data)
+//                       }
+//        }
     }
 
     public func onCancel(withArguments arguments: Any?) -> FlutterError? {

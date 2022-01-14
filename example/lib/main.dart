@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:flutter_pedometer/flutter_pedometer.dart';
+import 'package:flutter_motion/flutter_motion.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -56,13 +56,13 @@ class _MyAppState extends State<MyApp> {
   }
 
   _listenToActivity() {
-    _pedestrianStatusSubscription = FlutterPedometer.pedestrianStatusStream
+    _pedestrianStatusSubscription = FlutterMotion.pedestrianStatusStream
         .listen(onPedestrianStatusChanged)
       ..onError(onPedestrianStatusError);
   }
 
   _listenToMotion() {
-    _motionDetectorSubscription = FlutterPedometer.motionDetectorStream
+    _motionDetectorSubscription = FlutterMotion.motionDetectorStream
         .listen(onMotion)
       ..onError(onMotionError);
   }
@@ -94,7 +94,7 @@ class _MyAppState extends State<MyApp> {
               builder: (c, child) => MaterialApp(
                 home: Scaffold(
                   appBar: AppBar(
-                    title: const Text('FlutterPedometer  example app'),
+                    title: const Text('FlutterMotion  example app'),
                   ),
                   floatingActionButton: FloatingActionButton(
                     onPressed: isRunning ? _stop : _start,

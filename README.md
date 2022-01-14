@@ -1,4 +1,4 @@
-# flutter_pedometer 
+# flutter_motion
 
 [![pub package](https://img.shields.io/pub/v/pedometer.svg)](https://pub.dartlang.org/packages/pedometer)
 

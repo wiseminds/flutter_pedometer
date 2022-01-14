@@ -1,7 +1,8 @@
-name: flutter_pedometer
-description: A new flutter plugin project.
+name: flutter_motion
+description: A pedometer plugin for Flutter
 version: 0.0.1
-homepage:
+homepage: https://github.com/wiseminds/flutter_pedometer
+repository: https://github.com/wiseminds/flutter_pedometer
 
 environment:
   sdk: ">=2.15.1 <3.0.0"
@@ -34,7 +35,7 @@ flutter:
     # https://flutter.dev/docs/development/packages-and-plugins/developing-packages#plugin-platforms
     # -------------------
        ios:
-        pluginClass: FlutterPedometerPlugin
+        pluginClass: FlutterMotionPlugin
     # -------------------
 
   # To add assets to your plugin package, add an assets section, like this:
