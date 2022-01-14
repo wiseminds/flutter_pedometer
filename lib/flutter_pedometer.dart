@@ -6,12 +6,59 @@
 import 'dart:async';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_pedometer/models/activity.dart';
+
+import 'models/motion.dart';
+export 'models/activity.dart';
+export 'models/motion.dart';
+
+// const int _stopped = 0, _walking = 1;
 
 class FlutterPedometer {
-  static const MethodChannel _channel = MethodChannel('flutter_pedometer');
+  static const EventChannel _activityRecognitionChannel =
+      EventChannel('com.flutter_pedometer.activity_recognition');
+  static const EventChannel _motionDetectorChannel =
+      EventChannel('com.flutter_pedometer.motion_detector');
 
-  static Future<String?> get platformVersion async {
-    final String? version = await _channel.invokeMethod('getPlatformVersion');
-    return version;
+  static final StreamController<Activity> _androidPedestrianController =
+      StreamController.broadcast();
+
+  /// Returns one step at a time.
+  /// Events come every time a step is detected.
+  static Stream<Activity> get pedestrianStatusStream {
+    Stream<Activity> stream = _activityRecognitionChannel
+        .receiveBroadcastStream()
+        .map((event) => Activity.values
+            .where((element) => element.name == event)
+            .toList()[0]);
+    // if (Platform.isAndroid) return _androidStream(stream);
+    return stream;
   }
+
+  /// Returns the steps taken since last system boot.
+  /// Events may come with a delay.
+  static Stream<Motion> get motionDetectorStream => _motionDetectorChannel
+      .receiveBroadcastStream()
+      .map((event) => Motion.fromJSON((event as Map<Object?, Object?>)
+          .map((key, value) => MapEntry('$key', value))));
 }
+
+/// A DTO for steps taken containing the number of steps taken.
+// class motionDetector {
+//   late DateTime _timeStamp;
+//   int _steps = 0;
+
+//   motionDetector._(dynamic e) {
+//     _steps = e as int;
+//     _timeStamp = DateTime.now();
+//   }
+
+//   int get steps => _steps;
+
+//   DateTime get timeStamp => _timeStamp;
+
+//   @override
+//   String toString() =>
+//       'Steps taken: $_steps at ${_timeStamp.toIso8601String()}';
+// }
+ 

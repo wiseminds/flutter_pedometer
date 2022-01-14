@@ -11,9 +11,9 @@ public class SwiftFlutterPedometerPlugin: NSObject, FlutterPlugin {
         let stepDetectionChannel = FlutterEventChannel.init(name: "com.flutter_pedometer.activity_recognition", binaryMessenger: registrar.messenger())
         stepDetectionChannel.setStreamHandler(activityRecognitionHandler)
 
-        let stepCountHandler = StepCounter()
-        let stepCountChannel = FlutterEventChannel.init(name: "com.flutter_pedometer.motion_detector", binaryMessenger: registrar.messenger())
-        stepCountChannel.setStreamHandler(stepCountHandler)
+        let motionDetectorHandler = MotionDetection()
+        let motionDetectorChannel = FlutterEventChannel.init(name: "com.flutter_pedometer.motion_detector", binaryMessenger: registrar.messenger())
+        motionDetectorChannel.setStreamHandler(motionDetectorHandler)
   }
 
   
@@ -99,8 +99,8 @@ public class ActivityRecognition: NSObject, FlutterStreamHandler {
      
 }
 
-/// StepCounter, handles step count streaming
-public class StepCounter: NSObject, FlutterStreamHandler {
+/// MotionDetection, handles step count streaming
+public class MotionDetection: NSObject, FlutterStreamHandler {
     private let pedometer = CMPedometer()
     private var running = false
     private var eventSink: FlutterEventSink?
@@ -121,30 +121,20 @@ public class StepCounter: NSObject, FlutterStreamHandler {
                 eventSink(FlutterError(code: "3", message: "Step Count is not available", details: nil))
             }
             else if (!running) {
-                
-                let systemUptime = ProcessInfo.processInfo.systemUptime;
-                let timeNow = Date().timeIntervalSince1970
-                let dateOfLastReboot = Date(timeIntervalSince1970: timeNow - systemUptime)
                 running = true
-                pedometer.startUpdates(from: dateOfLastReboot) {
+                pedometer.startUpdates(from: Date()) {
                     pedometerData, error in
                     guard let pedometerData = pedometerData, error == nil else { return }
                     
-                    print(pedometerData.averageActivePace as Any)
-                    print(pedometerData.currentPace as Any)
-                    print(pedometerData.distance as Any)
-                    print(pedometerData.floorsAscended as Any)
-                    print(pedometerData.numberOfSteps)
-                    print(pedometerData.startDate)
-                    
               
                     DispatchQueue.main.async {
-                        self.handleEvent(data: ["numberOfSteps": pedometerData.numberOfSteps.intValue,
-                                                "averageActivePace": pedometerData.averageActivePace?.doubleValue,
-                                                "currentPace": pedometerData.currentPace?.doubleValue,
-                                                "distance": pedometerData.distance?.doubleValue,
-                                                "floorsAscended": pedometerData.floorsAscended?.intValue,
-                                                "startDate": pedometerData.startDate.timeIntervalSince1970 
+                        self.handleEvent(data: [
+                            "numberOfSteps": pedometerData.numberOfSteps.intValue,
+                            "averageActivePace": pedometerData.averageActivePace?.doubleValue,
+                            "currentPace": pedometerData.currentPace?.doubleValue,
+                            "distance": pedometerData.distance?.doubleValue,
+                            "floorsAscended": pedometerData.floorsAscended?.intValue,
+                            "startDate": pedometerData.startDate.timeIntervalSince1970
                                                ])
                     }
                 }
@@ -166,3 +156,5 @@ public class StepCounter: NSObject, FlutterStreamHandler {
         return nil
     }
 }
+
+// open func queryPedometerData(from start: Date, to end: Date, withHandler handler: @escaping CoreMotion.CMPedometerHandler)
