@@ -19,6 +19,7 @@ class _MyAppState extends State<MyApp> {
   StreamSubscription<Activity>? _pedestrianStatusSubscription;
   StreamSubscription<Motion>? _motionDetectorSubscription;
   bool isRunning = false;
+  String? _motionError, _activityError;
 
   late ValueNotifier<Activity> _activityNotifier;
   late ValueNotifier<Motion> _motionNotifier;
@@ -26,36 +27,32 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     _activityNotifier = ValueNotifier(Activity.unknown);
-    _motionNotifier = ValueNotifier(Motion());
+    _motionNotifier = ValueNotifier(const Motion());
     super.initState();
   }
 
   void onMotion(Motion event) {
-    print(event);
+    // print(event);
     _motionNotifier.value = event;
-    // setState(() {
-    //   _steps = event.steps.toString();
-    // });
   }
 
   void onPedestrianStatusChanged(Activity event) {
-    print(event);
+    // print(event);
     _activityNotifier.value = event;
   }
 
   void onPedestrianStatusError(error) {
-    print('onPedestrianStatusError: $error');
-    // setState(() {
-    //   // _status = 'Pedestrian Status not available';
-    // });
+    // print('onPedestrianStatusError: $error');
+    setState(() {
+      _motionError = error.toString();
+    });
     // print(_status);
   }
 
   void onMotionError(error) {
-    print('onMotionError: $error');
-    // setState(() {
-    //   _steps = 'Step Count not available';
-    // });
+    setState(() {
+      _activityError = error.toString();
+    });
   }
 
   _listenToActivity() {
@@ -108,6 +105,8 @@ class _MyAppState extends State<MyApp> {
                   body: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
+                      if (_activityError != null) Text(_activityError ?? ''),
+                      if (_motionError != null) Text(_motionError ?? ''),
                       Builder(builder: (context) {
                         return ListTile(
                           title: Text(
