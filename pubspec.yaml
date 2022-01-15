@@ -1,6 +1,6 @@
 name: flutter_motion
-description: A pedometer plugin for Flutter
-version: 0.0.2
+description: Access to CMMotionActivityManager and CMPedometer classes for iOS, android implementation is coming soon.
+version: 0.0.3
 homepage: https://github.com/wiseminds/flutter_pedometer
 repository: https://github.com/wiseminds/flutter_pedometer
 

@@ -1,12 +1,15 @@
 # flutter_motion
 
-[![pub package](https://img.shields.io/pub/v/pedometer.svg)](https://pub.dartlang.org/packages/pedometer)
+[![pub package](https://img.shields.io/pub/v/flutter_motion.svg)](https://pub.dartlang.org/packages/flutter_motion)
 
 Access to CMMotionActivityManager and CMPedometer classes for iOS, android implementation is coming soon.
 
 This plugin gets realtime motion data starting from  the time you started listening
 
-![](https://raw.githubusercontent.com/cph-cachet/flutter-plugins/master/packages/pedometer/imgs/screenshots.png)
+
+<img src="https://raw.githubusercontent.com/wiseminds/flutter_pedometer/main/screenshot/screenshot1.jpeg" width="200"/> <img src="https://raw.githubusercontent.com/wiseminds/flutter_pedometer/main/screenshot/screenshot2.jpeg" width="200"/> <img src="https://raw.githubusercontent.com/wiseminds/flutter_pedometer/main/screenshot/screenshot3.jpeg" width="200"/>
+
+ 
 
 ## Permissions for Android
 For Android 10 and above add the following permission to the Android manifest:
@@ -197,6 +200,14 @@ Below is shown a more generalized example. Remember to set the required permissi
               ),
             ));
   }
+```
+
+### Query motion data between specific dates
+``` dart
+    FlutterMotion.queryData( DateTime.now().subtract(
+                                          const Duration(minutes: 10)),
+                                      DateTime.now());
+                                 .then((value) => print(value));
 ```
 
 
