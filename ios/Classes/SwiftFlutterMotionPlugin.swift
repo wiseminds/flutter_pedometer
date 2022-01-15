@@ -6,14 +6,16 @@ import CoreMotion
 
 public class SwiftFlutterMotionPlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
-    // let channel = FlutterMethodChannel(name: "flutter_pedometer", binaryMessenger: registrar.messenger())
+    let channel = FlutterMethodChannel(name: "com.flutter_pedometer.motion_detector/method", binaryMessenger: registrar.messenger())
      let activityRecognitionHandler = ActivityRecognition()
-        let stepDetectionChannel = FlutterEventChannel.init(name: "com.flutter_pedometer.activity_recognition", binaryMessenger: registrar.messenger())
+        let stepDetectionChannel = FlutterEventChannel.init(name: "com.flutter_pedometer.activity_recognition/event", binaryMessenger: registrar.messenger())
         stepDetectionChannel.setStreamHandler(activityRecognitionHandler)
 
         let motionDetectorHandler = MotionDetection()
-        let motionDetectorChannel = FlutterEventChannel.init(name: "com.flutter_pedometer.motion_detector", binaryMessenger: registrar.messenger())
+        let motionDetectorChannel = FlutterEventChannel.init(name: "com.flutter_pedometer.motion_detector/event", binaryMessenger: registrar.messenger())
         motionDetectorChannel.setStreamHandler(motionDetectorHandler)
+
+        registrar.addMethodCallDelegate(motionDetectorHandler, channel: channel)
   }
 
   
@@ -100,7 +102,7 @@ public class ActivityRecognition: NSObject, FlutterStreamHandler {
 }
 
 /// MotionDetection, handles step count streaming
-public class MotionDetection: NSObject, FlutterStreamHandler {
+public class MotionDetection: NSObject, FlutterStreamHandler, FlutterPlugin {
     private let pedometer = CMPedometer()
     private var running = false
     private var eventSink: FlutterEventSink?
@@ -114,6 +116,63 @@ public class MotionDetection: NSObject, FlutterStreamHandler {
         eventSink!(data)
     }
 
+     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        
+          let args = call.arguments as? [String: Any]
+        
+        switch call.method {
+            
+        case "query":
+           let s = args?["start"] as! Double
+           let e = args?["end"] as! Double
+        //    print("\(s), \(e)")
+           
+             
+           let start = Date(timeIntervalSince1970: s / 1000)
+           let end = Date(timeIntervalSince1970: e / 1000)
+
+        //    print("\(start), \(end)")
+            
+            
+                pedometer.queryPedometerData(from: start, to:end) { (data, error) in
+                    DispatchQueue.main.async {
+                        print(data  as Any)
+                        if #available(iOS 10.0, *) {
+                            result( [
+                                "numberOfSteps": data?.numberOfSteps.intValue ?? 0.0,
+                                "averageActivePace": data?.averageActivePace?.doubleValue ?? 0.0,
+                                "currentPace": data?.currentPace?.doubleValue ?? 0.0,
+                                "distance": data?.distance?.doubleValue ?? 0,
+                                "floorsAscended": data?.floorsAscended?.intValue ?? 0,
+                                "floorsDescended": data?.floorsDescended?.intValue ?? 0,
+                                "startDate": (data?.startDate.timeIntervalSince1970 ?? 0) * 1000,
+                                "endDate":(( data?.endDate.timeIntervalSince1970 ?? 0) * 1000)
+                            ] as  [String: Any?] )
+                        } else {
+                           result(nil)
+                        }
+                              
+                    }
+                }
+           
+         
+            
+            
+         
+        default:
+            result(FlutterMethodNotImplemented)
+        }
+        
+        
+    }
+
+
+  public static func register(with registrar: FlutterPluginRegistrar) {
+        print( "Pedometer tried to register which is not allowed")
+    }
+    
+
+   
     public func onListen(withArguments arguments: Any?, eventSink: @escaping FlutterEventSink) -> FlutterError? {
         self.eventSink = eventSink
         if #available(iOS 10.0, *) {
@@ -134,7 +193,7 @@ public class MotionDetection: NSObject, FlutterStreamHandler {
                             "currentPace": pedometerData.currentPace?.doubleValue,
                             "distance": pedometerData.distance?.doubleValue,
                             "floorsAscended": pedometerData.floorsAscended?.intValue,
-                            "startDate": pedometerData.startDate.timeIntervalSince1970
+                            "startDate": pedometerData.startDate.timeIntervalSince1970 * 1000
                                                ])
                     }
                 }
@@ -145,13 +204,7 @@ public class MotionDetection: NSObject, FlutterStreamHandler {
         return nil
     }
     
-    public func queryData(){
-//        pedometer.queryPedometerData(from: Date(), to: Date()) { (data, error) in
-//            DispatchQueue.main.async {
-//                         print(data)
-//                       }
-//        }
-    }
+   
 
     public func onCancel(withArguments arguments: Any?) -> FlutterError? {
         NotificationCenter.default.removeObserver(self)

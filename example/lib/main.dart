@@ -50,6 +50,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   void onMotionError(error) {
+    print(error);
     setState(() {
       _activityError = error.toString();
     });
@@ -153,6 +154,15 @@ class _MyAppState extends State<MyApp> {
                                   style: Theme.of(context).textTheme.headline4),
                               subtitle: const Text('numberOfSteps'),
                             ),
+                            ElevatedButton(
+                                onPressed: () {
+                                  FlutterMotion.queryData(
+                                          DateTime.now().subtract(
+                                              const Duration(minutes: 10)),
+                                          DateTime.now())
+                                      .then((value) => print(value));
+                                },
+                                child: Text('Query'))
                           ],
                         );
                       }),
