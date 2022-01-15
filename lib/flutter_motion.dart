@@ -15,15 +15,18 @@ export 'models/motion.dart';
 // const int _stopped = 0, _walking = 1;
 
 class FlutterMotion {
+  /// current activity event channel, listen to this to tell what the user is currently doing
   static const EventChannel _activityRecognitionChannel =
       EventChannel('com.flutter_pedometer.activity_recognition/event');
+
+  /// current motion data event channel, listen to this to get details about user's motion activity.
   static const EventChannel _motionDetectorEventChannel =
       EventChannel('com.flutter_pedometer.motion_detector/event');
 
+  /// current motion data method channel, used to send commands to the motion detector
   static const MethodChannel _motionDetectorMethodChannel =
       MethodChannel('com.flutter_pedometer.motion_detector/method');
 
-  /// Returns one step at a time.
   /// Events come every time a step is detected.
   static Stream<Activity> get pedestrianStatusStream {
     Stream<Activity> stream = _activityRecognitionChannel
@@ -35,6 +38,7 @@ class FlutterMotion {
     return stream;
   }
 
+  /// query data between dates from the motion sensor
   static Future<Motion?> queryData(DateTime start, DateTime end) async {
     try {
       final result = await _motionDetectorMethodChannel.invokeMethod('query', {
@@ -45,12 +49,12 @@ class FlutterMotion {
       return Motion.fromJSON((result as Map<Object?, Object?>)
           .map((key, value) => MapEntry('$key', value)));
     } catch (e) {
-      print(e);
+      // print(e);
     }
   }
 
-  /// Returns the steps taken since last system boot.
-  /// Events may come with a delay.
+ 
+  /// continuos stream of motion data
   static Stream<Motion> get motionDetectorStream => _motionDetectorEventChannel
       .receiveBroadcastStream()
       .map((event) => Motion.fromJSON((event as Map<Object?, Object?>)
