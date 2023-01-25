@@ -49,11 +49,11 @@ class FlutterMotion {
       return Motion.fromJSON((result as Map<Object?, Object?>)
           .map((key, value) => MapEntry('$key', value)));
     } catch (e) {
+      return null;
       // print(e);
     }
   }
 
- 
   /// continuos stream of motion data
   static Stream<Motion> get motionDetectorStream => _motionDetectorEventChannel
       .receiveBroadcastStream()

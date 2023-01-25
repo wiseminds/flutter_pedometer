@@ -115,7 +115,7 @@ class _MyAppState extends State<MyApp> {
                                   .watch<ValueNotifier<Activity>>()
                                   .value
                                   .name,
-                              style: Theme.of(context).textTheme.headline4),
+                              style: Theme.of(context).textTheme.headlineMedium),
                           subtitle: const Text('Activity'),
                         );
                       }),
@@ -127,31 +127,31 @@ class _MyAppState extends State<MyApp> {
                               title: Text(
                                   motion.value.averageActivePace
                                       .toStringAsFixed(2),
-                                  style: Theme.of(context).textTheme.headline4),
+                                  style: Theme.of(context).textTheme.headlineMedium),
                               subtitle: const Text('averageActivePace'),
                             ),
                             ListTile(
                               title: Text(
                                   motion.value.currentPace.toStringAsFixed(2),
-                                  style: Theme.of(context).textTheme.headline4),
+                                  style: Theme.of(context).textTheme.headlineMedium),
                               subtitle: const Text('currentPace'),
                             ),
                             ListTile(
                               title: Text(
                                   motion.value.distance.toStringAsFixed(2),
-                                  style: Theme.of(context).textTheme.headline4),
+                                  style: Theme.of(context).textTheme.headlineMedium),
                               subtitle: const Text('distance'),
                             ),
                             ListTile(
                               title: Text(
                                   motion.value.floorsAscended
                                       .toStringAsFixed(2),
-                                  style: Theme.of(context).textTheme.headline4),
+                                  style: Theme.of(context).textTheme.headlineMedium),
                               subtitle: const Text('floorsAscended'),
                             ),
                             ListTile(
                               title: Text('${motion.value.numberOfSteps}',
-                                  style: Theme.of(context).textTheme.headline4),
+                                  style: Theme.of(context).textTheme.headlineMedium),
                               subtitle: const Text('numberOfSteps'),
                             ),
                             ElevatedButton(

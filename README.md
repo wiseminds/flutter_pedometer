@@ -211,3 +211,5 @@ Below is shown a more generalized example. Remember to set the required permissi
 ```
 
 
+
+https://developer.android.com/jetpack/androidx/releases/health-connect
